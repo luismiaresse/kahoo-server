@@ -1,0 +1,5 @@
+*.cfg
+/cache/
+/resources/\[local\]/
+/db/
+/sinusar/

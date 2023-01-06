@@ -1,4 +1,5 @@
 *.cfg
+*.zip
 /cache/
 /resources/\[local\]/
 /db/

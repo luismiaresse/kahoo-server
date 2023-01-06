@@ -125,7 +125,10 @@
         "RequestIpl",
         "SetRadarAsExteriorThisFrame",
         "vector2",
-        "SetDeepOceanScaler"
+        "SetDeepOceanScaler",
+        "GetPlayerName",
+        "SetSeethrough",
+        "SetNightvision"
     ],
     "Lua.workspace.library": [
         "${3rd}/OpenResty/library"

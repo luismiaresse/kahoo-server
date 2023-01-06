@@ -63,44 +63,44 @@
 }
 
 .menu.align-left {
-  left: 0;
+  left: 20;
   top: 50%;
 }
 
 .menu.align-top-left {
   left: 3rem;
-  top: 0;
+  top: 20;
 }
 
 .menu.align-top {
   left: 50%;
-  top: 0;
+  top: 20;
 }
 
 .menu.align-top-right {
   right: 3rem;
-  top: 0;
+  top: 20;
 }
 
 .menu.align-right {
-  right: 0;
+  right: 20;
   top: 50%;
 }
 
 .menu.align-bottom-right {
   right: 3rem;
-  bottom: 0;
+  bottom: 20;
 }
 
 .menu.align-bottom {
   left: 50%;
-  bottom: 0;
+  bottom: 20;
   transform: translate(0, -50%);
 }
 
 .menu.align-bottom-left {
   left: 3rem;
-  bottom: 0;
+  bottom: 20;
 }
 
 .menu.align-center {

@@ -128,7 +128,8 @@
         "SetDeepOceanScaler",
         "GetPlayerName",
         "SetSeethrough",
-        "SetNightvision"
+        "SetNightvision",
+        "vector4"
     ],
     "Lua.workspace.library": [
         "${3rd}/OpenResty/library"

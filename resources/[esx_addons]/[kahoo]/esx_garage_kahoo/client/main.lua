@@ -4,14 +4,9 @@ local menuIsShowed = false
 
 
 AddEventHandler('spawnVehicle', function(data)
-    local spawnCoords = {
-        x = data.spawnPoint.x,
-        y = data.spawnPoint.y,
-        z = data.spawnPoint.z
-    }
 
-    if ESX.Game.IsSpawnPointClear(spawnCoords, 2.5) then
-        ESX.Game.SpawnVehicle(data.vehicleProps.model, spawnCoords, data.spawnPoint.heading, function(vehicle)
+    if ESX.Game.IsSpawnPointClear(data.spawnPoint, 2.5) then
+        ESX.Game.SpawnVehicle(data.vehicleProps.model, data.spawnPoint, data.spawnPoint.heading, function(vehicle)
             TaskWarpPedIntoVehicle(ESX.PlayerData.ped, vehicle, -1)
             ESX.Game.SetVehicleProperties(vehicle, data.vehicleProps)
             SetVehicleEngineOn(vehicle, (not GetIsVehicleEngineRunning(vehicle)), true, true)
@@ -203,10 +198,9 @@ AddEventHandler('esx_garage:openMenu', function ()
             local vehicleProps = optionsVehicles[data.current.name][data.current.value + 1]
             -- Spawnea el coche
             local v = Config.Garages[currentMarker]
-            local spawnPoint = vector3(v.SpawnPoint.x, v.SpawnPoint.y, v.SpawnPoint.z)
-            local heading = v.SpawnPoint.heading
+            local spawnPoint = v.SpawnPoint
             if ESX.Game.IsSpawnPointClear(spawnPoint, 2.5) then
-                ESX.Game.SpawnVehicle(model, spawnPoint, heading, function(vehicle)
+                ESX.Game.SpawnVehicle(model, spawnPoint, spawnPoint.w, function(vehicle)
                     TaskWarpPedIntoVehicle(ESX.PlayerData.ped, vehicle, -1)
                     ESX.Game.SetVehicleProperties(vehicle, vehicleProps)
                     SetVehicleEngineOn(vehicle, (not GetIsVehicleEngineRunning(vehicle)), true, true)

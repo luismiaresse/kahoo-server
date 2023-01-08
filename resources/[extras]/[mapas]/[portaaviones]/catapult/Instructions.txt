@@ -1,0 +1,14 @@
+
+Installation:
+Drag the Catapult Folder into your Resources
+Make sure to update your server.cfg
+IMPORTANT - Make sure to install -  https://forum.cfx.re/t/release-v2-fix-holes-in-the-map-up-to-after-hours/25240 (This adds the Aircraft Carrier)
+
+To only allow custom planes, edit the `planeList` array to add your airplanes (all caps)
+
+Credits:
+This Script was made by soey_sause#0420
+An OpenSource Development Group Project
+
+OpenSource Development Group Discord:
+discord.gg/nfJauN7

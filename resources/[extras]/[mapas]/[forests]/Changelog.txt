@@ -1,0 +1,99 @@
+≡≡≡≡≡≡≡≡≡≡≡≡≡
+ Version 4.0
+≡≡≡≡≡≡≡≡≡≡≡≡≡
+
+• Moved many props to GTA V Remastered and vice versa so that both mods no longer overlap. Then relocated colliding props in the area where both mods previously overlapped.
+• Added over 2000 new props by merging props from GTA V Remastered v1.3 by le__AK (which adds over 8500 new props but 6500 of them remain in GTA V Remastered).
+• Switched prefix from forest_* to forests_* to avoid hash collision (forest_s_d_135_lod and bh1_48_balustradb both result in hash value 0x7D7A3327). (thanks to Brainfire for reporting)
+• Fixed flags of some non-vegetational entities.
+
+
+≡≡≡≡≡≡≡≡≡≡≡≡≡
+ Version 3.4
+≡≡≡≡≡≡≡≡≡≡≡≡≡
+
+Changes by Larcius:
+• Fixed floating trees when using NaturalVision Evolved (caused by the replacement models for prop_tree_pine_01 and prop_w_r_cedar_01 since they have a higher pivot point).
+• Slightly reworked LOD and SLOD models ("hat" for top view is more flat and is positioned depending on the prop).
+• Reworked static collision models by splitting content into regular (no prefix) and high (prefix hi@) models.
+
+Changes by JRod:
+• Reworked a scenario file (countryside_ne.ymt).
+
+
+≡≡≡≡≡≡≡≡≡≡≡≡≡
+ Version 3.3
+≡≡≡≡≡≡≡≡≡≡≡≡≡
+
+• Multi-partitioned maps and major refactoring of lod and slod models (increases performance and significantly reduces required pool size of "Building").
+• Adjusted brightness of some LOD and SLOD textures.
+• Reduced size of static collision models by only providing static collision models of props with a scaling not close to 1.
+• Rearranged packages so that it is possible to install the northern and the southern part independently (only north, only south or both).
+• Edited tree that were clipping with one of the watchtowers of "Firewatch Lookout Towers" by PNWParksFan (https://www.gta5-mods.com/maps/firewatch-lookout-towers). (thanks to ReNNie for reporting)
+
+
+≡≡≡≡≡≡≡≡≡≡≡≡≡
+ Version 3.2
+≡≡≡≡≡≡≡≡≡≡≡≡≡
+
+• Slightly reworked LOD models.
+• Reworked textures for LOD and SLOD models of maple trees (Prop_Tree_Maple_02 and Prop_Tree_Maple_03).
+• Changed all entities with priority level high, medium, low to level required to avoid entities not beeing displayed (see https://gtaforums.com/topic/919609-relv-v-proprestore/ for further information).
+• Recalculated Z coordinates of trees so that the trunk is as high as possible but still not floating.
+• Reduced/recalculated distance when to change from LOD to SLOD1 (increases performance without noticible affecting visual appearance).
+• Replaced jacada trees (the pink ones) by olive trees.
+• Replaced many of the dead trees by healthy ones.
+• Restructured ymap files.
+
+Changes by JRod:
+• Added 27 cargens which were once part of version 2.2 and reworked some of them.
+• Replaced, deleted, added some non-vegetational props and fixed clipping/floating props.
+
+Changes by Alex106:
+• Added a script to allow entering the shelter at coordinates -491.34, 2235.70, 150.87 (this requires Script Hook V .NET (https://www.gta5-mods.com/tools/scripthookv-net) in order to work).
+
+
+≡≡≡≡≡≡≡≡≡≡≡≡≡
+ Version 3.1
+≡≡≡≡≡≡≡≡≡≡≡≡≡
+
+Visual changes:
+• Replaced single standing redwood trees (TEST_Tree_Forest_Trunk_01) by other trees.
+• Edited a few trees (relocated, rescaled, changed model, ...).
+• Added a few trees.
+• Slight rework at silo hatch.
+
+Other changes:
+• Reduced extents of static collision models and slod models.
+• Reduced/recalculated values for far distance view non-tree models.
+• Recalculated distance when to change from HD to LOD (slightly reduced for large entities and increased for small entities).
+• Reduced/recalculated distance when to change from LOD to SLOD1.
+• Fixed non-tree entities (like boxes, chairs, barrels, ...) that shouldn't be static (so now they interact physically when hit by a car, on explosions, ...).
+• Provided static collision model for cabin.
+• Provided OIV uninstallation file.
+
+
+≡≡≡≡≡≡≡≡≡≡≡≡≡
+ Version 3.0
+≡≡≡≡≡≡≡≡≡≡≡≡≡
+
+Visual changes:
+• Replaced most trees by a large diversity of trees (instead of just two different tree models now there are 26 different models; see "Detailed list of trees" at bottom of page for more details).
+• Changed scaling/size of trees.
+• Reduced tilt of trees in accordance to their height.
+• Recalculated Z coordinate of every tree.
+• Created textures and models for medium far distance view (LOD models) for every kind of tree.
+• In addition to medium far distance view models (LOD models) three further far distance view models were created (SLOD1 to SLOD3 models).
+• Enabled reflections of trees in water (that is because for reflections mainly SLOD1 to SLOD3 models are used).
+• Relocated some trees.
+• Added a few trees.
+• Reworked observation points "Raton Canyon" and "East Alamo View".
+
+Other changes:
+• Fixed wrong collisions by providing static collision models (before only embedded collision was used but since embedded collision ignores scaling every scaled tree ended up with a wrong collision model).
+• Reduced/recalculated values for far distance view models (in accordance to their height) to be more consistent with other entities.
+  (before redwood trees had a very high value which heavily affected performance and forced users to reduce "Extended Distance Scaling" under "Advanced Graphics").
+• Extracted non-tree entities in separated files (.ymap).
+• Performed clustering of trees to get reasonable chunks of maps (to get rid of having some ymap files with huge extents).
+• Provided OIV installation file.
+• Provided FiveM resource bundle. (thanks to leonad1125)

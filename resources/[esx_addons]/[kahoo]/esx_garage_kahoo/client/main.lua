@@ -3,22 +3,26 @@ local isInMarker, isInVehicle, wasInMarker = false, false, false
 local menuIsShowed = false
 
 
-AddEventHandler('spawnVehicle', function(data)
-
-    if ESX.Game.IsSpawnPointClear(data.spawnPoint, 2.5) then
-        ESX.Game.SpawnVehicle(data.vehicleProps.model, data.spawnPoint, data.spawnPoint.heading, function(vehicle)
+AddEventHandler('esx_garage:spawnVehicle', function(model, vehicleProps)
+    local v = Config.Garages[currentMarker]
+    local spawnPoint = v.SpawnPoint
+    if ESX.Game.IsSpawnPointClear(spawnPoint, 2.5) then
+        ESX.Game.SpawnVehicle(model, spawnPoint, spawnPoint.w, function(vehicle)
             TaskWarpPedIntoVehicle(ESX.PlayerData.ped, vehicle, -1)
-            ESX.Game.SetVehicleProperties(vehicle, data.vehicleProps)
+            ESX.Game.SetVehicleProperties(vehicle, vehicleProps)
             SetVehicleEngineOn(vehicle, (not GetIsVehicleEngineRunning(vehicle)), true, true)
+            if Config.RepairOnSpawn then
+                CreateThread(function()
+                    Wait(0)
+                    SetVehicleFixed(vehicle)
+                    SetVehicleDeformationFixed(vehicle)
+                    SetVehicleUndriveable(vehicle, false)
+                end)
+            end
         end)
-
-        TriggerServerEvent('esx_garage:updateOwnedVehicle', false, nil, nil, data.vehicleProps)
-        TriggerEvent('esx_garage:closemenu')
-
-        ESX.ShowNotification(_U('veh_released'))
-
+        ESX.ShowNotification(_U('veh_released'))    
     else
-        ESX.ShowNotification(_U('veh_block'), 'error')
+        ESX.ShowNotification(_U('veh_block'), "error")
     end
 end)
 
@@ -26,14 +30,12 @@ end)
 -- Create Blips
 CreateThread(function()
     for _, v in pairs(Config.Garages) do
-        local blip = AddBlipForCoord(v.EntryPoint.x, v.EntryPoint.y, v.EntryPoint.z)
-
+        local blip = AddBlipForCoord(v.EntryPoint)
         SetBlipSprite(blip, v.Sprite)
         SetBlipDisplay(blip, 4)
         SetBlipScale(blip, v.Scale)
         SetBlipColour(blip, v.Colour)
         SetBlipAsShortRange(blip, true)
-
         BeginTextCommandSetBlipName("STRING")
         AddTextComponentSubstringPlayerName(_U('parking_blip_name'))
         EndTextCommandSetBlipName(blip)
@@ -50,7 +52,7 @@ CreateThread(function()
         currentMarker = nil
         for k, v in pairs(Config.Garages) do
             -- Dentro de la distancia de dibujo
-            if GetDistanceBetweenCoords(coords, v.EntryPoint.x, v.EntryPoint.y, v.EntryPoint.z) < Config.DrawDistance then
+            if GetDistanceBetweenCoords(coords, v.EntryPoint) < Config.DrawDistance then
                 DrawMarker(Config.Markers.EntryPoint.Type, v.EntryPoint.x, v.EntryPoint.y, v.EntryPoint.z, 0.0, 0.0,
                     0.0, 0, 0.0, 0.0, Config.Markers.EntryPoint.Size.x, Config.Markers.EntryPoint.Size.y,
                     Config.Markers.EntryPoint.Size.z, Config.Markers.EntryPoint.Color.r,
@@ -58,7 +60,7 @@ CreateThread(function()
                     false, false, false)
                 sleep = 0
                 -- Dentro del marker
-                if GetDistanceBetweenCoords(coords, v.EntryPoint.x, v.EntryPoint.y, v.EntryPoint.z) < Config.Markers.EntryPoint.Size.x then
+                if GetDistanceBetweenCoords(coords, v.EntryPoint) < Config.Markers.EntryPoint.Size.x + 0.5 then
                     isInMarker = true
                     currentMarker = k
                 end
@@ -70,7 +72,7 @@ CreateThread(function()
 			wasInMarker = true
 			lastMarker                = currentMarker
 			TriggerEvent('esx_garage:hasEnteredMarker')
-            CreateThread(function ()
+            CreateThread(function()
                 while isInMarker do
                     if IsControlJustReleased(0, 38) and not menuIsShowed then
                         if isInVehicle then
@@ -162,6 +164,7 @@ AddEventHandler('esx_garage:openMenu', function ()
         -- print("impoundedOptions: " .. json.encode(impoundedOptions))
 
         for i = 1, #vehStates, 1 do
+            local entryType = 'slider'
             if i == 1 then
                 options = parkedOptions
             elseif i == 2 then
@@ -170,14 +173,13 @@ AddEventHandler('esx_garage:openMenu', function ()
                 options = impoundedOptions
             end
             if #options == 0 then
-                options = {_U('no_vehicles')}
+                entryType = 'label'
             end
             table.insert(elements, {
                 name    = vehStates[i].name,
                 label   = vehStates[i].label,
                 value   = 0,   -- posición del slider
-                type    = 'slider',
-                max     = 0,   -- descubrir por qué
+                type    = entryType,
                 options = options
             })
         end
@@ -196,29 +198,7 @@ AddEventHandler('esx_garage:openMenu', function ()
             -- print("data.current.value: " .. data.current.value)
             local model = optionsVehicles[data.current.name][data.current.value + 1].model
             local vehicleProps = optionsVehicles[data.current.name][data.current.value + 1]
-            -- Spawnea el coche
-            local v = Config.Garages[currentMarker]
-            local spawnPoint = v.SpawnPoint
-            if ESX.Game.IsSpawnPointClear(spawnPoint, 2.5) then
-                ESX.Game.SpawnVehicle(model, spawnPoint, spawnPoint.w, function(vehicle)
-                    TaskWarpPedIntoVehicle(ESX.PlayerData.ped, vehicle, -1)
-                    ESX.Game.SetVehicleProperties(vehicle, vehicleProps)
-                    SetVehicleEngineOn(vehicle, (not GetIsVehicleEngineRunning(vehicle)), true, true)
-                    if Config.RepairOnSpawn then
-                        CreateThread(function()
-                            Wait(0)
-                            SetVehicleFixed(vehicle)
-                            SetVehicleDeformationFixed(vehicle)
-                            SetVehicleUndriveable(vehicle, false)
-                        end)
-                    end
-                end)
-                ESX.ShowNotification(_U('veh_released'))
-                TriggerServerEvent('esx_garage:updateOwnedVehicle', false, nil, nil, vehicleProps)
-    
-            else
-                ESX.ShowNotification(_U('veh_block'), "error")
-            end
+            TriggerEvent('esx_garage:spawnVehicle', model, vehicleProps)
             menu.close()
             menuIsShowed = false
         end, function(data, menu) -- OnCancel function

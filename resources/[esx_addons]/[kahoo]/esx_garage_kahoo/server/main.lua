@@ -10,7 +10,7 @@ AddEventHandler('esx_garage:updateOwnedVehicle', function(stored, parking, Impou
 			['@plate'] 		= vehicleProps.plate,
 			['@stored']     = stored,
 			['@parking']    = parking,
-			['@Impound']    	= Impound
+			['@Impound']    = Impound
 		})
 
 		if stored then
@@ -29,7 +29,7 @@ AddEventHandler('esx_garage:setImpound', function(Impound, vehicleProps)
 			['@vehicle'] 	= json.encode(vehicleProps),
 			['@plate'] 		= vehicleProps.plate,
 			['@stored']     = 2,
-			['@Impound']    	= Impound
+			['@Impound']    = Impound
 		})
 
 		xPlayer.showNotification(_U('veh_impounded'))
@@ -98,57 +98,14 @@ ESX.RegisterServerCallback('esx_garage:checkVehicleOwner', function(source, cb, 
 	end)
 end)
 
--- Pounds part
-ESX.RegisterServerCallback('esx_garage:getVehiclesImpounded', function(source, cb)
-	local xPlayer  = ESX.GetPlayerFromId(source)
-
-	MySQL.query('SELECT * FROM `owned_vehicles` WHERE `owner` = @identifier AND `stored` = 0',
-	{
-		['@identifier'] 	= xPlayer.identifier,
-	}, function(result)
-		local vehicles = {}
-		
-		for i = 1, #result, 1 do
-			table.insert(vehicles, {
-				vehicle 	= json.decode(result[i].vehicle),
-				plate 		= result[i].plate
-			})
-		end
-
-		cb(vehicles)
-	end)
-end)
-
-ESX.RegisterServerCallback('esx_garage:getVehiclesInPound', function(source, cb, Impound)
-	local xPlayer  = ESX.GetPlayerFromId(source)
-
-	MySQL.query('SELECT * FROM `owned_vehicles` WHERE `owner` = @identifier AND `pound` = @Impound AND `stored` = 2',
-	{
-		['@identifier'] 	= xPlayer.identifier,
-		['@Impound']     	    = Impound
-	}, function(result)
-		local vehicles = {}
-
-		for i = 1, #result, 1 do
-			table.insert(vehicles, {
-				vehicle 	= json.decode(result[i].vehicle),
-				plate 		= result[i].plate
-			})
-		end
-
-		cb(vehicles)
-	end)
-end)
-
 ESX.RegisterServerCallback('esx_garage:checkMoney', function(source, cb, amount)
 	local xPlayer = ESX.GetPlayerFromId(source)
-
 	cb(xPlayer.getMoney() >= amount)
 end)
 
 RegisterServerEvent("esx_garage:payPound")
 AddEventHandler("esx_garage:payPound", function(amount)
-		local source = source
+	local source = source
     local xPlayer = ESX.GetPlayerFromId(source)
 
     if xPlayer.getMoney() >= amount then

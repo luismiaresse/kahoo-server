@@ -1,7 +1,9 @@
 Config = {}
 Config.Locale = "es"
 Config.RepairOnSpawn = true		-- Repara automáticamente el coche
-Config.DrawDistance = 20.0
+Config.OutPrice = 100 			-- Precio para recuperar un coche fuera del garaje
+Config.ImpoundPrice = 500 		-- Precio para recuperar un coche en el depósito
+Config.DrawDistance = 25.0
 
 Config.Markers = {
 	EntryPoint = {
@@ -12,8 +14,8 @@ Config.Markers = {
 			z = 0.5,
 		},
 		Color = {
-			r = 255,
-			g = 255,
+			r = 93,
+			g = 240,
 			b = 255,
 		},
 	},
@@ -25,8 +27,8 @@ Config.Markers = {
 			z = 0.5,
 		},
 		Color = {
-			r = 255,
-			g = 255,
+			r = 93,
+			g = 240,
 			b = 255,
 		},
 	},
@@ -47,6 +49,13 @@ Config.Garages = {
 		Scale = 0.8,
 		Colour = 0,
 	},
+	LaMesa = {
+		EntryPoint = vector3(1002.09, -1858.37, 30.68),
+		SpawnPoint = vector4(994.83, -1858.68, 30.88, 178.58),
+		Sprite = 357,
+		Scale = 0.8,
+		Colour = 0,
+	},
 	LosSantosAirport = {
 		EntryPoint = vector3(-1016.65, -2696.04, 13.98),
 		SpawnPoint = vector4(-980.4, -2701.06, 12.86, 56.0),
@@ -62,14 +71,14 @@ Config.Garages = {
 		Colour = 0,
 	},
 	PaletoBay = {
-		EntryPoint = vector3(105.36, 6613.59, 31.40),
+		EntryPoint = vector3(110.83, 6608.25, 31.80),
 		SpawnPoint = vector4(128.78, 6622.99, 30.78, 315.01),
 		Sprite = 357,
 		Scale = 0.8,
 		Colour = 0,
 	},
 	CayoPerico = {
-		EntryPoint = vector3(4503.25, -4520.67, 3.41),
+		EntryPoint = vector3(4490.25, -4511.40, 4.41),
 		SpawnPoint = vector4(4511.52, -4517.73, 4.11, 22.2),
 		Sprite = 357,
 		Scale = 0.8,

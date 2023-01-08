@@ -25,5 +25,4 @@ Locales["es"] = {
     ['parked_menu'] = 'Vehículos almacenados',
     ['notparked_menu'] = 'Vehículos fuera del garaje',
     ['impounded_menu'] = 'Vehículos incautados',
-    ['no_vehicles'] = 'Vacío'
 }

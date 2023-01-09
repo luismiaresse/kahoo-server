@@ -1,7 +1,16 @@
+-- Estados posibles
+OUT = 0
+STORED = 1
+IMPOUND = 2
+
 local currentMarker, lastMarker = nil, nil
 local isInMarker, isInVehicle, wasInMarker = false, false, false
 local menuIsShowed = false
 
+local function closeAllMenus()
+    menuIsShowed = false
+    ESX.UI.Menu.CloseAll()
+end
 
 AddEventHandler('esx_garage:spawnVehicle', function(model, vehicleProps)
     local v = Config.Garages[currentMarker]
@@ -98,7 +107,6 @@ end)
 
 local function vehicleOptions(vehicleList)
     local options, optionsVehicles = {}, {}
-    -- Coches disponibles para cada estado
     for i = 1, #vehicleList, 1 do
         local friendlyName = GetDisplayNameFromVehicleModel(vehicleList[i].model)
         table.insert(optionsVehicles, vehicleList[i].vehicle)
@@ -117,7 +125,7 @@ AddEventHandler('esx_garage:storeVehicle', function ()
     ESX.TriggerServerCallback('esx_garage:checkVehicleOwner', function(owner)
         if owner then
             ESX.Game.DeleteVehicle(vehicle)
-            TriggerServerEvent('esx_garage:updateOwnedVehicle', 1, currentMarker,
+            TriggerServerEvent('esx_garage:updateOwnedVehicle', STORED, currentMarker,
                 vehicleProps)
             ESX.ShowNotification(_U('veh_stored'))
         else
@@ -126,6 +134,52 @@ AddEventHandler('esx_garage:storeVehicle', function ()
     end, vehicleProps.plate)
     isInVehicle = false
 end)
+
+
+
+local function PayMenu(vehicleProps, amount)
+    -- Si no es una opción sin vehículos
+    if vehicleProps ~= nil then
+        if amount == 0 then
+            TriggerEvent('esx_garage:spawnVehicle', vehicleProps.model, vehicleProps)
+            TriggerServerEvent('esx_garage:updateOwnedVehicle', 0, currentMarker,
+                vehicleProps)
+            return
+        end
+        ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'esx_garage_pay_menu', {
+            title = _U('retrieve_fee', amount),
+            align = 'bottom-right',
+            elements = {
+                {label = _U('no'), value = 'no'},
+                {label = _U('yes'), value = 'yes'}
+            }
+        }, function(data, menu)
+            if data.current.value == 'yes' then
+                ESX.TriggerServerCallback('esx_garage:payFee', function (canPay)
+                    if canPay then
+                        ESX.ShowNotification(_U('paid_retrieve_fee', amount))
+                        TriggerEvent('esx_garage:spawnVehicle', vehicleProps.model, vehicleProps)
+                        TriggerServerEvent('esx_garage:updateOwnedVehicle', OUT, currentMarker,
+                            vehicleProps)
+                    else
+                        ESX.ShowNotification(_U('missing_money'), 'error')
+
+                    end
+                end, amount)
+                closeAllMenus()
+            else
+                menu.close()
+            end
+        end, function(data, menu)
+            menu.close()
+        end)
+    else 
+        closeAllMenus()
+        ESX.ShowNotification(_U('no_veh_to_retrieve'))
+        ESX.TextUI(_U('access_parking'))
+    end
+
+end
 
 
 AddEventHandler('esx_garage:openMenu', function ()
@@ -184,9 +238,9 @@ AddEventHandler('esx_garage:openMenu', function ()
             })
         end
         
-        menuIsShowed = true
         -- print(json.encode(elements))
         
+        menuIsShowed = true
         ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'esx_garage', {
             title = _U('parking_blip_name'),
             align = "bottom-right",
@@ -196,22 +250,16 @@ AddEventHandler('esx_garage:openMenu', function ()
             -- print("data:" .. json.encode(data))
             -- print("data.current.name: " .. data.current.name)
             -- print("data.current.value: " .. data.current.value)
-            local vehicleProps = optionsVehicles[data.current.name][data.current.value + 1]
-            local model = nil
-            if vehicleProps ~= nil then
-                model = vehicleProps.model
-                TriggerEvent('esx_garage:spawnVehicle', model, vehicleProps)
-                TriggerServerEvent('esx_garage:updateOwnedVehicle', 0, currentMarker,
-                    vehicleProps)
-            else 
-                ESX.ShowNotification(_U('no_veh_to_retrieve'))
-                ESX.TextUI(_U('access_parking'))
+            local amountToPay = 0
+            if data.current.name == 'impounded' then
+                amountToPay = Config.ImpoundPrice
+            elseif data.current.name == 'notparked' then
+                amountToPay = Config.OutPrice
             end
-            menu.close()
-            menuIsShowed = false
+            local vehicleProps = optionsVehicles[data.current.name][data.current.value + 1]
+            PayMenu(vehicleProps, amountToPay)
         end, function(data, menu) -- OnCancel function
-            menu.close()
-            menuIsShowed = false
+            closeAllMenus()
             ESX.TextUI(_U('access_parking'))
         end)
     end)
@@ -230,8 +278,7 @@ end)
 AddEventHandler('esx_garage:hasExitedMarker', function()
     ESX.HideUI()
     if menuIsShowed then
-        ESX.UI.Menu.CloseAll()
-        menuIsShowed = false
+        closeAllMenus()
     end
 end)
 

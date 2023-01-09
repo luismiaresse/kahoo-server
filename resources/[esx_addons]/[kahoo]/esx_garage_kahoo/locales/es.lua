@@ -1,4 +1,6 @@
 Locales["es"] = {
+    ['yes'] = 'Sí',
+    ['no'] = 'No',
     ["parking_blip_name"] = 'Garaje',
     ["Impound_blip_name"] = 'Incautados',
     ["access_parking"] = '~g~[E]~s~ para acceder al parking.',
@@ -20,10 +22,11 @@ Locales["es"] = {
     ['veh_exit'] = 'Recuperar vehículo',
     ['pay_impound'] = 'Pago incautado',
     ['veh_block'] = 'No se puede recuperar el vehículo, la posición de aparición está bloqueada.',
-    ['pay_Impound_bill'] = 'Pagó con éxito ~g~$%s~s~ a la incautación.',
+    ['paid_retrieve_fee'] = 'Pagaste ~g~%s$~s~ para recuperar el vehículo.',
     ['missing_money'] = 'No tienes suficiente dinero.',
     ['parked_menu'] = 'Vehículos almacenados',
     ['notparked_menu'] = 'Vehículos fuera del garaje',
     ['impounded_menu'] = 'Vehículos incautados',
-    ['no_veh_to_retrieve'] = 'No tienes ningún vehículo de esta categoría'
+    ['no_veh_to_retrieve'] = 'No tienes ningún vehículo de esta categoría',
+    ['retrieve_fee'] = '¿Pagar %s$?',
 }

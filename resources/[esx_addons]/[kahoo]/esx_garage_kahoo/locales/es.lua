@@ -25,4 +25,5 @@ Locales["es"] = {
     ['parked_menu'] = 'Vehículos almacenados',
     ['notparked_menu'] = 'Vehículos fuera del garaje',
     ['impounded_menu'] = 'Vehículos incautados',
+    ['no_veh_to_retrieve'] = 'No tienes ningún vehículo de esta categoría'
 }

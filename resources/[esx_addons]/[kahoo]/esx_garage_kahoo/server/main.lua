@@ -1,21 +1,15 @@
 RegisterServerEvent('esx_garage:updateOwnedVehicle')
-AddEventHandler('esx_garage:updateOwnedVehicle', function(stored, parking, Impound, vehicleProps)
+AddEventHandler('esx_garage:updateOwnedVehicle', function(stored, parking, vehicleProps)
 	local source = source
 	local xPlayer  = ESX.GetPlayerFromId(source)
-
-		MySQL.update('UPDATE owned_vehicles SET `stored` = @stored, `parking` = @parking, `pound` = @Impound, `vehicle` = @vehicle WHERE `plate` = @plate AND `owner` = @identifier',
-		{
-			['@identifier'] = xPlayer.identifier,
-			['@vehicle'] 	= json.encode(vehicleProps),
-			['@plate'] 		= vehicleProps.plate,
-			['@stored']     = stored,
-			['@parking']    = parking,
-			['@Impound']    = Impound
-		})
-
-		if stored then
-			xPlayer.showNotification(_U('veh_stored'))
-		end
+	MySQL.update('UPDATE owned_vehicles SET `stored` = @stored, `parking` = @parking, `pound` = @Impound, `vehicle` = @vehicle WHERE `plate` = @plate AND `owner` = @identifier',
+	{
+		['@identifier'] = xPlayer.identifier,
+		['@vehicle'] 	= json.encode(vehicleProps),
+		['@plate'] 		= vehicleProps.plate,
+		['@stored']     = stored,
+		['@parking']    = parking
+	})
 end)
 
 RegisterServerEvent('esx_garage:setImpound')

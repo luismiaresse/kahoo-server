@@ -13,7 +13,7 @@ AddEventHandler('esx_garage:spawnVehicle', function(model, vehicleProps)
             SetVehicleEngineOn(vehicle, (not GetIsVehicleEngineRunning(vehicle)), true, true)
             if Config.RepairOnSpawn then
                 CreateThread(function()
-                    Wait(0)
+                    Wait(100)
                     SetVehicleFixed(vehicle)
                     SetVehicleDeformationFixed(vehicle)
                     SetVehicleUndriveable(vehicle, false)
@@ -74,13 +74,12 @@ CreateThread(function()
 			TriggerEvent('esx_garage:hasEnteredMarker')
             CreateThread(function()
                 while isInMarker do
-                    if IsControlJustReleased(0, 38) and not menuIsShowed then
+                    if IsControlJustReleased(0, 38) then
                         if isInVehicle then
                             TriggerEvent('esx_garage:storeVehicle')
-                        else
+                        elseif not menuIsShowed then
                             TriggerEvent('esx_garage:openMenu')
                         end
-                        break
                     end
                     Wait(0)
                 end
@@ -118,8 +117,9 @@ AddEventHandler('esx_garage:storeVehicle', function ()
     ESX.TriggerServerCallback('esx_garage:checkVehicleOwner', function(owner)
         if owner then
             ESX.Game.DeleteVehicle(vehicle)
-            TriggerServerEvent('esx_garage:updateOwnedVehicle', true, currentMarker, nil,
+            TriggerServerEvent('esx_garage:updateOwnedVehicle', 1, currentMarker,
                 vehicleProps)
+            ESX.ShowNotification(_U('veh_stored'))
         else
             ESX.ShowNotification(_U('not_owning_veh'), 'error')
         end
@@ -196,14 +196,23 @@ AddEventHandler('esx_garage:openMenu', function ()
             -- print("data:" .. json.encode(data))
             -- print("data.current.name: " .. data.current.name)
             -- print("data.current.value: " .. data.current.value)
-            local model = optionsVehicles[data.current.name][data.current.value + 1].model
             local vehicleProps = optionsVehicles[data.current.name][data.current.value + 1]
-            TriggerEvent('esx_garage:spawnVehicle', model, vehicleProps)
+            local model = nil
+            if vehicleProps ~= nil then
+                model = vehicleProps.model
+                TriggerEvent('esx_garage:spawnVehicle', model, vehicleProps)
+                TriggerServerEvent('esx_garage:updateOwnedVehicle', 0, currentMarker,
+                    vehicleProps)
+            else 
+                ESX.ShowNotification(_U('no_veh_to_retrieve'))
+                ESX.TextUI(_U('access_parking'))
+            end
             menu.close()
             menuIsShowed = false
         end, function(data, menu) -- OnCancel function
             menu.close()
             menuIsShowed = false
+            ESX.TextUI(_U('access_parking'))
         end)
     end)
 end)

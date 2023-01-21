@@ -12,7 +12,7 @@ local function closeAllMenus()
     ESX.UI.Menu.CloseAll()
 end
 
-AddEventHandler('esx_garage:spawnVehicle', function(model, vehicleProps)
+AddEventHandler('esx_garage_kahoo:spawnVehicle', function(model, vehicleProps)
     local v = Config.Garages[currentMarker]
     local spawnPoint = v.SpawnPoint
     if ESX.Game.IsSpawnPointClear(spawnPoint, 2.5) then
@@ -80,14 +80,14 @@ CreateThread(function()
 		if (isInMarker and not wasInMarker) or (isInMarker and lastMarker ~= currentMarker) then
 			wasInMarker = true
 			lastMarker                = currentMarker
-			TriggerEvent('esx_garage:hasEnteredMarker')
+			TriggerEvent('esx_garage_kahoo:hasEnteredMarker')
             CreateThread(function()
                 while isInMarker do
                     if IsControlJustReleased(0, 38) then
                         if isInVehicle then
-                            TriggerEvent('esx_garage:storeVehicle')
+                            TriggerEvent('esx_garage_kahoo:storeVehicle')
                         elseif not menuIsShowed then
-                            TriggerEvent('esx_garage:openMenu')
+                            TriggerEvent('esx_garage_kahoo:openMenu')
                         end
                     end
                     Wait(0)
@@ -97,7 +97,7 @@ CreateThread(function()
         -- Sale del marker
 		if not isInMarker and wasInMarker then
 			wasInMarker = false
-			TriggerEvent('esx_garage:hasExitedMarker')
+			TriggerEvent('esx_garage_kahoo:hasExitedMarker')
 		end
 
         Wait(sleep)
@@ -116,16 +116,16 @@ local function vehicleOptions(vehicleList)
 end
 
 
-AddEventHandler('esx_garage:storeVehicle', function ()
+AddEventHandler('esx_garage_kahoo:storeVehicle', function ()
     local playerPed = PlayerPedId()
     local vehicle = GetVehiclePedIsIn(playerPed, false)
     local vehicleProps = ESX.Game.GetVehicleProperties(vehicle)
     assert(vehicleProps ~= nil, 'Vehicle props cannot be nil')
 
-    ESX.TriggerServerCallback('esx_garage:checkVehicleOwner', function(owner)
+    ESX.TriggerServerCallback('esx_garage_kahoo:checkVehicleOwner', function(owner)
         if owner then
             ESX.Game.DeleteVehicle(vehicle)
-            TriggerServerEvent('esx_garage:updateOwnedVehicle', STORED, currentMarker,
+            TriggerServerEvent('esx_garage_kahoo:updateOwnedVehicle', STORED, currentMarker,
                 vehicleProps)
             ESX.ShowNotification(_U('veh_stored'))
         else
@@ -141,8 +141,8 @@ local function PayMenu(vehicleProps, amount)
     -- Si no es una opción sin vehículos
     if vehicleProps ~= nil then
         if amount == 0 then
-            TriggerEvent('esx_garage:spawnVehicle', vehicleProps.model, vehicleProps)
-            TriggerServerEvent('esx_garage:updateOwnedVehicle', 0, currentMarker,
+            TriggerEvent('esx_garage_kahoo:spawnVehicle', vehicleProps.model, vehicleProps)
+            TriggerServerEvent('esx_garage_kahoo:updateOwnedVehicle', OUT, currentMarker,
                 vehicleProps)
             return
         end
@@ -155,11 +155,11 @@ local function PayMenu(vehicleProps, amount)
             }
         }, function(data, menu)
             if data.current.value == 'yes' then
-                ESX.TriggerServerCallback('esx_garage:payFee', function (canPay)
+                ESX.TriggerServerCallback('esx_garage_kahoo:payFee', function (canPay)
                     if canPay then
                         ESX.ShowNotification(_U('paid_retrieve_fee', amount))
-                        TriggerEvent('esx_garage:spawnVehicle', vehicleProps.model, vehicleProps)
-                        TriggerServerEvent('esx_garage:updateOwnedVehicle', OUT, currentMarker,
+                        TriggerEvent('esx_garage_kahoo:spawnVehicle', vehicleProps.model, vehicleProps)
+                        TriggerServerEvent('esx_garage_kahoo:updateOwnedVehicle', OUT, currentMarker,
                             vehicleProps)
                     else
                         ESX.ShowNotification(_U('missing_money'), 'error')
@@ -182,9 +182,9 @@ local function PayMenu(vehicleProps, amount)
 end
 
 
-AddEventHandler('esx_garage:openMenu', function ()
+AddEventHandler('esx_garage_kahoo:openMenu', function ()
     ESX.HideUI()
-    ESX.TriggerServerCallback('esx_garage:getOwnedVehicles', function(vehNotParkedList, vehParkedList, vehImpoundedList)
+    ESX.TriggerServerCallback('esx_garage_kahoo:getOwnedVehicles', function(vehNotParkedList, vehParkedList, vehImpoundedList)
         -- imprime los coches disponibles
         -- print("vehParkedList: " .. json.encode(vehParkedList))
         -- print("vehNotParkedList: " .. json.encode(vehNotParkedList))
@@ -266,7 +266,7 @@ AddEventHandler('esx_garage:openMenu', function ()
 end)
 
 
-AddEventHandler('esx_garage:hasEnteredMarker', function()
+AddEventHandler('esx_garage_kahoo:hasEnteredMarker', function()
     isInVehicle = IsPedInAnyVehicle(ESX.PlayerData.ped, false)
     if isInVehicle then
         ESX.TextUI(_U('park_veh'))
@@ -275,7 +275,7 @@ AddEventHandler('esx_garage:hasEnteredMarker', function()
     end
 end)
 
-AddEventHandler('esx_garage:hasExitedMarker', function()
+AddEventHandler('esx_garage_kahoo:hasExitedMarker', function()
     ESX.HideUI()
     if menuIsShowed then
         closeAllMenus()
@@ -285,6 +285,6 @@ end)
 
 AddEventHandler('onResourceStop', function(resource)
 	if resource == GetCurrentResourceName() and (menuIsShowed or isInMarker) then
-        TriggerEvent('esx_garage:hasExitedMarker')
+        TriggerEvent('esx_garage_kahoo:hasExitedMarker')
     end
 end)

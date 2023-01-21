@@ -4,11 +4,10 @@ STORED = 1
 IMPOUND = 2
 
 
-RegisterServerEvent('esx_garage:updateOwnedVehicle')
-AddEventHandler('esx_garage:updateOwnedVehicle', function(stored, parking, vehicleProps)
-	local source = source
+RegisterServerEvent('esx_garage_kahoo:updateOwnedVehicle')
+AddEventHandler('esx_garage_kahoo:updateOwnedVehicle', function(stored, parking, vehicleProps)
 	local xPlayer  = ESX.GetPlayerFromId(source)
-	MySQL.update('UPDATE owned_vehicles SET `stored` = @stored, `parking` = @parking, `pound` = @Impound, `vehicle` = @vehicle WHERE `plate` = @plate AND `owner` = @identifier',
+	MySQL.update('UPDATE owned_vehicles SET `time` = CURRENT_TIMESTAMP,`stored` = @stored, `parking` = @parking, `pound` = @Impound, `vehicle` = @vehicle WHERE `plate` = @plate AND `owner` = @identifier',
 	{
 		['@identifier'] = xPlayer.identifier,
 		['@vehicle'] 	= json.encode(vehicleProps),
@@ -17,25 +16,6 @@ AddEventHandler('esx_garage:updateOwnedVehicle', function(stored, parking, vehic
 		['@parking']    = parking
 	})
 end)
-
-RegisterServerEvent('esx_garage:setImpound')
-AddEventHandler('esx_garage:setImpound', function(Impound, vehicleProps)
-	local source = source
-	local xPlayer  = ESX.GetPlayerFromId(source)
-
-		MySQL.update('UPDATE owned_vehicles SET `stored` = @stored, `pound` = @Impound, `vehicle` = @vehicle WHERE `plate` = @plate AND `owner` = @identifier',
-		{
-			['@identifier'] = xPlayer.identifier,
-			['@vehicle'] 	= json.encode(vehicleProps),
-			['@plate'] 		= vehicleProps.plate,
-			['@stored']     = 2,
-			['@Impound']    = Impound
-		})
-
-		xPlayer.showNotification(_U('veh_impounded'))
-	
-end)
-
 
 local function GetVehiclesByState(xPlayer, vehState)
 	-- Estados posibles definidos al principio del archivo
@@ -66,12 +46,12 @@ local function GetVehiclesByState(xPlayer, vehState)
 end
 
 
-ESX.RegisterServerCallback('esx_garage:getOwnedVehicles', function(source, cb)
+ESX.RegisterServerCallback('esx_garage_kahoo:getOwnedVehicles', function(source, cb)
 	local xPlayer  = ESX.GetPlayerFromId(source)
-	cb(GetVehiclesByState(xPlayer, 0), GetVehiclesByState(xPlayer, 1), GetVehiclesByState(xPlayer, 2))
+	cb(GetVehiclesByState(xPlayer, OUT), GetVehiclesByState(xPlayer, STORED), GetVehiclesByState(xPlayer, IMPOUND))
 end)
 
-ESX.RegisterServerCallback('esx_garage:checkVehicleOwner', function(source, cb, plate)
+ESX.RegisterServerCallback('esx_garage_kahoo:checkVehicleOwner', function(source, cb, plate)
     local xPlayer = ESX.GetPlayerFromId(source)
 
 	MySQL.query('SELECT COUNT(*) as count FROM `owned_vehicles` WHERE `owner` = @identifier AND `plate` = @plate',
@@ -88,12 +68,7 @@ ESX.RegisterServerCallback('esx_garage:checkVehicleOwner', function(source, cb, 
 	end)
 end)
 
-ESX.RegisterServerCallback('esx_garage:checkMoney', function(source, cb, amount)
-	local xPlayer = ESX.GetPlayerFromId(source)
-	cb(xPlayer.getMoney() >= amount)
-end)
-
-ESX.RegisterServerCallback('esx_garage:payFee', function(source, cb, amount)
+ESX.RegisterServerCallback('esx_garage_kahoo:payFee', function(source, cb, amount)
 	local xPlayer = ESX.GetPlayerFromId(source)
 	if xPlayer.getMoney() >= amount then
 		xPlayer.removeMoney(amount)

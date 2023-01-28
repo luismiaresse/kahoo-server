@@ -5,12 +5,13 @@ IMPOUND = 2
 
 
 RegisterServerEvent('esx_garage_kahoo:updateOwnedVehicle')
-AddEventHandler('esx_garage_kahoo:updateOwnedVehicle', function(stored, parking, vehicleProps)
+AddEventHandler('esx_garage_kahoo:updateOwnedVehicle', function(stored, parking, modelName, vehicleProps)
 	local xPlayer  = ESX.GetPlayerFromId(source)
-	MySQL.update('UPDATE owned_vehicles SET `time` = CURRENT_TIMESTAMP,`stored` = @stored, `parking` = @parking, `pound` = @Impound, `vehicle` = @vehicle WHERE `plate` = @plate AND `owner` = @identifier',
+	MySQL.update('UPDATE owned_vehicles SET `time` = CURRENT_TIMESTAMP,`stored` = @stored, `parking` = @parking, `vehicle` = @vehicle, `model` = @model WHERE `plate` = @plate AND `owner` = @identifier',
 	{
 		['@identifier'] = xPlayer.identifier,
 		['@vehicle'] 	= json.encode(vehicleProps),
+		['@model'] 		= modelName,
 		['@plate'] 		= vehicleProps.plate,
 		['@stored']     = stored,
 		['@parking']    = parking

@@ -108,7 +108,7 @@ end)
 local function vehicleOptions(vehicleList)
     local options, optionsVehicles = {}, {}
     for i = 1, #vehicleList, 1 do
-        local friendlyName = GetDisplayNameFromVehicleModel(vehicleList[i].model)
+        local friendlyName = GetLabelText(GetDisplayNameFromVehicleModel(vehicleList[i].model))
         table.insert(optionsVehicles, vehicleList[i].vehicle)
         table.insert(options, friendlyName .. " - " .. vehicleList[i].plate)
     end
@@ -121,12 +121,13 @@ AddEventHandler('esx_garage_kahoo:storeVehicle', function ()
     local vehicle = GetVehiclePedIsIn(playerPed, false)
     local vehicleProps = ESX.Game.GetVehicleProperties(vehicle)
     assert(vehicleProps ~= nil, 'Vehicle props cannot be nil')
+    local modelName = GetDisplayNameFromVehicleModel(vehicleProps.model)
 
     ESX.TriggerServerCallback('esx_garage_kahoo:checkVehicleOwner', function(owner)
         if owner then
             ESX.Game.DeleteVehicle(vehicle)
             TriggerServerEvent('esx_garage_kahoo:updateOwnedVehicle', STORED, currentMarker,
-                vehicleProps)
+                modelName, vehicleProps)
             ESX.ShowNotification(_U('veh_stored'))
         else
             ESX.ShowNotification(_U('not_owning_veh'), 'error')
@@ -140,9 +141,10 @@ end)
 local function PayMenu(vehicleProps, amount)
     -- Si no es una opción sin vehículos
     if vehicleProps ~= nil then
+        local modelName = GetDisplayNameFromVehicleModel(vehicleProps.model)
         if amount == 0 then
             TriggerEvent('esx_garage_kahoo:spawnVehicle', vehicleProps.model, vehicleProps)
-            TriggerServerEvent('esx_garage_kahoo:updateOwnedVehicle', OUT, currentMarker,
+            TriggerServerEvent('esx_garage_kahoo:updateOwnedVehicle', OUT, currentMarker, modelName,
                 vehicleProps)
             return
         end
@@ -159,7 +161,7 @@ local function PayMenu(vehicleProps, amount)
                     if canPay then
                         ESX.ShowNotification(_U('paid_retrieve_fee', amount))
                         TriggerEvent('esx_garage_kahoo:spawnVehicle', vehicleProps.model, vehicleProps)
-                        TriggerServerEvent('esx_garage_kahoo:updateOwnedVehicle', OUT, currentMarker,
+                        TriggerServerEvent('esx_garage_kahoo:updateOwnedVehicle', OUT, currentMarker, modelName,
                             vehicleProps)
                     else
                         ESX.ShowNotification(_U('missing_money'), 'error')

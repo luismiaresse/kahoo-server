@@ -3,4 +3,4 @@ game 'gta5'
 
 author 'THC'
 
-client_script 'ai.lua'
+client_script 'client.lua'

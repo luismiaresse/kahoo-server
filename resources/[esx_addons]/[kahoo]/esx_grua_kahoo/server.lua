@@ -12,7 +12,7 @@ end)
 function Main()
     while true do
         Wait(Config.Intervalo * 1000)
-        local vehiculos = MySQL.query.await("SELECT * FROM owned_vehicles ov WHERE ov.stored = 0 and CURRENT_TIMESTAMP() - ov.time > "..Config.Limite);  
+        local vehiculos = MySQL.query.await("SELECT * FROM owned_vehicles ov WHERE ov.stored = 0 and time_to_sec(timediff(current_timestamp(), ov.time)) >"..Config.Limite);  
         print("Vehículos fuera de garaje demasiado tiempo: " .. #vehiculos)
         for i = 1, #vehiculos do
             local v = vehiculos[i]
@@ -20,8 +20,8 @@ function Main()
             local xPlayer  = ESX.GetPlayerFromIdentifier(v.owner)
             TriggerClientEvent('esx_grua_kahoo:checkVehicle', xPlayer.source, v, true)
         end
-
-        local vehiculosAviso = MySQL.query.await("SELECT * FROM owned_vehicles ov WHERE ov.stored = 0 and CURRENT_TIMESTAMP() - ov.time > "..Config.Aviso);  
+        Wait(1000)      -- Espera para no avisar por vehiculos que ya han sido incautados
+        local vehiculosAviso = MySQL.query.await("SELECT * FROM owned_vehicles ov WHERE ov.stored = 0 and time_to_sec(timediff(current_timestamp(), ov.time)) >"..Config.Aviso);  
         print("Vehículos avisados fuera de garaje demasiado tiempo: " .. #vehiculosAviso)
         for i = 1, #vehiculosAviso do
             local v = vehiculosAviso[i]

@@ -155,7 +155,9 @@
         "SetBlipCategory",
         "NetworkIsSessionStarted",
         "GetVehicleNumberPlateText",
-        "SetEntityAsMissionEntity"
+        "SetEntityAsMissionEntity",
+        "PerformHttpRequest",
+        "GetLabelText"
     ],
     "Lua.workspace.library": [
         "${3rd}/OpenResty/library"

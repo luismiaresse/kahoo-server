@@ -39,3 +39,20 @@ AddEventHandler('esx_grua_kahoo:checkVehicle', function (v, limite)
         ESX.ShowNotification("Tu vehículo con matrícula [~r~"..v.plate.."~s~] está cerca de incautarse por inactividad. Guárdalo antes de que ocurra.")
     end
 end)
+
+
+RegisterNetEvent('esx_grua_kahoo:antidupe')
+AddEventHandler('esx_grua_kahoo:antidupe', function (v)
+    local plate = v.plate.." "   -- IMPORTANTE (Sino no son ==)
+
+    for vehicle in EnumerateVehicles() do
+        if GetVehicleNumberPlateText(vehicle) ~= plate then
+            goto continue      -- Salta al final del bucle
+        end
+        if IsVehiclePreviouslyOwnedByPlayer(vehicle) and GetVehicleNumberPlateText(vehicle) == plate then
+            DeleteVehicle(vehicle)
+        end
+        ::continue::
+    end
+    
+end)

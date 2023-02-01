@@ -160,6 +160,8 @@ local function PayMenu(vehicleProps, amount)
                 ESX.TriggerServerCallback('esx_garage_kahoo:payFee', function (canPay)
                     if canPay then
                         ESX.ShowNotification(_U('paid_retrieve_fee', amount))
+                        TriggerServerEvent('esx_grua_kahoo:antidupeCheck', vehicleProps.plate)
+                        Wait(250)
                         TriggerEvent('esx_garage_kahoo:spawnVehicle', vehicleProps.model, vehicleProps)
                         TriggerServerEvent('esx_garage_kahoo:updateOwnedVehicle', OUT, currentMarker, modelName,
                             vehicleProps)

@@ -45,3 +45,12 @@ AddEventHandler('esx_grua_kahoo:resetTimer', function(plate)
     print("Resetting timer for plate "..plate)
     MySQL.execute("UPDATE owned_vehicles ov SET ov.time = CURRENT_TIMESTAMP() WHERE ov.plate = @plate", {["@plate"] = plate})
 end)
+
+RegisterServerEvent('esx_grua_kahoo:antidupeCheck')
+AddEventHandler('esx_grua_kahoo:antidupeCheck', function(plate)
+    local xPlayer = ESX.GetPlayerFromId(source)
+    local vehiculo = MySQL.query.await("SELECT * FROM owned_vehicles ov WHERE ov.stored = 0 AND ov.plate = @plate", {["@plate"] = plate})
+    if vehiculo[1] then
+        TriggerClientEvent('esx_grua_kahoo:antidupe', xPlayer.source, vehiculo[1])
+    end
+end)

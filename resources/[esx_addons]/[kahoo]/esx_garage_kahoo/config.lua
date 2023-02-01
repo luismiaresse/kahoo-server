@@ -1,8 +1,8 @@
 Config = {}
 Config.Locale = "es"
 Config.RepairOnSpawn = true		-- Repara automáticamente el coche
-Config.OutPrice = 100 			-- Precio para recuperar un coche fuera del garaje
-Config.ImpoundPrice = 500 		-- Precio para recuperar un coche en el depósito
+Config.OutPrice = 250 			-- Precio para recuperar un coche fuera del garaje
+Config.ImpoundPrice = 1000 		-- Precio para recuperar un coche en el depósito
 Config.DrawDistance = 25.0
 
 Config.Markers = {

@@ -1,5 +1,5 @@
 {
-    "Lua.runtime.version": "LuaJIT",
+    "Lua.runtime.version": "Lua 5.4",
     "Lua.diagnostics.globals": [
         "ngx",
         "IsPedInAnyVehicle",
@@ -157,7 +157,8 @@
         "GetVehicleNumberPlateText",
         "SetEntityAsMissionEntity",
         "PerformHttpRequest",
-        "GetLabelText"
+        "GetLabelText",
+        "IsVehiclePreviouslyOwnedByPlayer"
     ],
     "Lua.workspace.library": [
         "${3rd}/OpenResty/library"

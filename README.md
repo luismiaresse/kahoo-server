@@ -1,4 +1,4 @@
-# Kahoo server-data
+# Kahoo server
 
 Recursos del servidor FiveM.
 
